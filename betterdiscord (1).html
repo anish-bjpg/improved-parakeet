@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetterDiscord – TRIPLE A</title>
+<style>
+:root{--bg:#0a0a0a;--s:#111;--s2:#1a1a1a;--b:rgba(255,255,255,0.06);--r:#e02020;--g:#57f287;--t:#f0f0f0;--m:#666;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#050505;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Comic Sans MS','Comic Sans',cursive;color:var(--t);}
+.phone{width:375px;height:812px;background:var(--bg);border-radius:44px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 40px 100px rgba(0,0,0,0.9),0 0 80px rgba(220,30,30,0.2);}
+.bar{height:44px;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;font-size:15px;font-weight:600;}
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.screen.active{display:flex;}
+h1{font-family:'Comic Sans MS','Comic Sans',cursive;font-size:24px;padding:14px 20px 10px;flex-shrink:0;font-weight:800;}
+.nav{height:72px;background:var(--s);border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-around;padding:0 10px 8px;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 16px;border-radius:12px;}
+.ni.active .nl{color:var(--r);}
+.ni.active .ic{color:var(--r);}
+.ni .ic{font-size:13px;color:var(--m);}
+.nl{font-size:10px;color:var(--m);}
+/* HOME */
+.feed{flex:1;overflow-y:auto;padding:0 20px 16px;}
+.feed::-webkit-scrollbar{display:none;}
+.card{background:var(--s);border:1px solid var(--b);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s;}
+.card:hover{border-color:rgba(220,30,30,0.4);}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ico{width:34px;height:34px;border-radius:10px;background:rgba(220,32,32,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--r);}
+.ch{font-size:13px;font-weight:500;flex:1;}
+.badge{background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.txt{font-size:13px;color:var(--m);line-height:1.5;}
+.txt b{color:var(--t);}
+/* SEARCH */
+.si{margin:0 20px 12px;background:var(--s);border:1px solid var(--r);border-radius:14px;display:flex;align-items:center;gap:8px;padding:10px 14px;flex-shrink:0;}
+.si input{background:none;border:none;outline:none;color:var(--t);font-family:'Comic Sans MS','Comic Sans',cursive;font-size:15px;flex:1;}
+.si input::placeholder{color:var(--m);}
+.res{flex:1;overflow-y:auto;padding:0 20px;}
+.res::-webkit-scrollbar{display:none;}
+.ri{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--b);cursor:pointer;}
+.rav{width:36px;height:36px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--r);flex-shrink:0;}
+.rn{font-size:13px;font-weight:600;}
+.rw{font-size:11px;color:var(--m);}
+.rt{font-size:13px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ri mark{background:rgba(220,30,30,0.3);color:var(--t);border-radius:3px;padding:0 2px;}
+.empty{text-align:center;padding:40px 20px;color:var(--m);font-size:14px;}
+/* DM */
+.dml{flex:1;overflow-y:auto;padding:0 20px;}
+.dml::-webkit-scrollbar{display:none;}
+.di{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b);cursor:pointer;transition:padding-left 0.15s;}
+.di:hover{padding-left:4px;}
+.dav{width:44px;height:44px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--r);position:relative;flex-shrink:0;}
+.dot{position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);}
+.online{background:var(--g);}.idle{background:#faa61a;}.offline{background:var(--m);}
+.dn{font-size:14px;font-weight:600;}
+.dp{font-size:12px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* CHAT */
+.chdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--s);border-bottom:1px solid var(--b);flex-shrink:0;}
+.back{font-size:28px;color:var(--r);cursor:pointer;}
+.chav{width:38px;height:38px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--r);flex-shrink:0;}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;}
+.msgs::-webkit-scrollbar{display:none;}
+.msg{max-width:75%;display:flex;flex-direction:column;}
+.msg.me{align-self:flex-end;align-items:flex-end;}
+.msg.them{align-self:flex-start;}
+.bbl{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.4;}
+.me .bbl{background:var(--r);color:#fff;border-bottom-right-radius:4px;}
+.them .bbl{background:var(--s2);border-bottom-left-radius:4px;}
+.mt{font-size:10px;color:var(--m);margin-top:3px;}
+.cinp{display:flex;gap:8px;padding:10px 14px;background:var(--s);border-top:1px solid var(--b);flex-shrink:0;}
+.cinp input{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:22px;padding:10px 16px;color:var(--t);font-family:'Comic Sans MS','Comic Sans',cursive;font-size:14px;outline:none;}
+.cinp input:focus{border-color:var(--r);}
+.cinp input::placeholder{color:var(--m);}
+.snd{width:38px;height:38px;background:var(--r);border:none;border-radius:50%;color:#fff;font-size:12px;font-family:'Comic Sans MS','Comic Sans',cursive;cursor:pointer;flex-shrink:0;}
+/* SERVERS */
+.svl{flex:1;overflow-y:auto;padding:0 20px;}
+.svl::-webkit-scrollbar{display:none;}
+.sv{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--b);cursor:pointer;transition:padding-left 0.15s;}
+.sv:hover{padding-left:4px;}
+.svi{width:48px;height:48px;border-radius:14px;background:rgba(220,30,30,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--r);flex-shrink:0;}
+.svn{font-size:14px;font-weight:600;}
+.svc{font-size:12px;color:#666;}
+/* CHANNELS */
+.chl{flex:1;overflow-y:auto;padding:0 20px;}
+.chl::-webkit-scrollbar{display:none;}
+.ci2{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--b);cursor:pointer;transition:padding-left 0.15s;}
+.ci2:hover{padding-left:4px;}
+.ci2 .hash{font-size:18px;color:#666;width:24px;text-align:center;}
+.ci2 .cn{font-size:14px;font-weight:500;flex:1;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bar"><span>6:07</span><span></span></div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <h1>For You</h1>
+    <div class="feed">
+      <div class="card" style="background:linear-gradient(135deg,rgba(220,30,30,0.15),rgba(255,60,60,0.05));border-color:rgba(220,30,30,0.3)"><div class="row"><span style="font-size:10px;font-weight:700;background:linear-gradient(90deg,#e02020,#ff4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.5px">AI SUMMARY</span><span style="font-size:11px;color:var(--m);margin-left:4px">gaming-squad · 2h ago</span></div><div style="font-size:14px;font-weight:800;margin-bottom:6px">Big debate in #builds</div><div class="txt"><b>blurrr</b> dropped a new PC build list, <b>pengiun</b> said the GPU is mid and overpriced. 47 replies — mostly glazing pengiun. Active poll: <b>4070 vs 4080?</b></div></div>
+      <div class="card"><div class="row"><div class="ico">GEN</div><span class="ch">#general-chat</span><span class="badge">12</span></div><div class="txt"><b>blurrr:</b> the new season is hella ass, the map sucks</div></div>
+      <div class="card"><div class="row"><div class="ico">ART</div><span class="ch">#share-your-work</span><span class="badge">5</span></div><div class="txt"><b>pengiun:</b> finally finished it ts took forever</div></div>
+      <div class="card"><div class="row"><div class="ico">DEV</div><span class="ch">#announcements</span></div><div class="txt"><b>magicnuts:</b> admin abuse is finally backk</div></div>
+      <div class="card"><div class="row"><div class="ico">BLD</div><span class="ch">#builds</span></div><div class="txt"><b>drake:</b> parts r finally restocked lfg</div></div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="screen" id="screen-search">
+    <h1>Search</h1>
+    <div class="si"><span style="color:var(--m);font-size:13px">srch</span><input id="sq" placeholder="Search messages, people..." oninput="doSearch()" autocomplete="off"></div>
+    <div class="res" id="sr"><div class="empty">Start typing to search</div></div>
+  </div>
+
+  <!-- SERVERS -->
+  <div class="screen" id="screen-servers">
+    <h1>Servers</h1>
+    <div class="svl">
+      <div class="sv" onclick="openServer('gaming-squad','GS',['general-chat','builds','clips','off-topic'])">
+        <div class="svi">GS</div>
+        <div><div class="svn">gaming-squad</div><div class="svc">4 channels · 12 unread</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANNELS -->
+  <div class="screen" id="screen-channels">
+    <div class="chdr">
+      <div class="back" onclick="switchScreen('servers')">‹</div>
+      <div class="chav" id="sav"></div>
+      <div><div style="font-size:15px;font-weight:700" id="snm"></div><div style="font-size:11px;color:var(--m)">Server</div></div>
+    </div>
+    <div class="chl" id="chl"></div>
+  </div>
+
+  <!-- DM LIST -->
+  <div class="screen" id="screen-dm">
+    <h1>Messages</h1>
+    <div class="dml">
+      <div class="di" onclick="openChat('blurrr','BL','online')"><div class="dav">BL<div class="dot online"></div></div><div style="flex:1;min-width:0"><div class="dn">blurrr</div><div class="dp">bro its hella fried</div></div></div>
+      <div class="di" onclick="openChat('pengiun','PE','online')"><div class="dav">PE<div class="dot online"></div></div><div style="flex:1;min-width:0"><div class="dn">pengiun</div><div class="dp">that clip was hella tuff</div></div></div>
+      <div class="di" onclick="openChat('snakes','SN','idle')"><div class="dav">SN<div class="dot idle"></div></div><div style="flex:1;min-width:0"><div class="dn">snakes</div><div class="dp">aight bet, pull up at 8</div></div></div>
+      <div class="di" onclick="openChat('drake','DR','offline')"><div class="dav">DR<div class="dot offline"></div></div><div style="flex:1;min-width:0"><div class="dn">drake</div><div class="dp">that build was hella tuff</div></div></div>
+      <div class="di" onclick="openChat('mrbeast','MB','online')"><div class="dav">MB<div class="dot online"></div></div><div style="flex:1;min-width:0"><div class="dn">mrbeast</div><div class="dp">giving away an island to whoever wins</div></div></div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="screen" id="screen-chat">
+    <div class="chdr">
+      <div class="back" onclick="switchScreen('dm')">‹</div>
+      <div class="chav" id="cav"></div>
+      <div><div style="font-size:15px;font-weight:700" id="cnm"></div><div style="font-size:11px;color:var(--m)" id="cst"></div></div>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="cinp"><input id="ci" placeholder="Message..." onkeydown="if(event.key==='Enter')send()"><button class="snd" onclick="send()">send</button></div>
+  </div>
+
+  <div class="nav">
+    <div class="ni active" id="nav-home" onclick="switchScreen('home')"><span class="nl">Home</span></div>
+    <div class="ni" id="nav-search" onclick="switchScreen('search')"><span class="nl">Search</span></div>
+    <div class="ni" id="nav-servers" onclick="switchScreen('servers')"><span class="nl">Servers</span></div>
+    <div class="ni" id="nav-dm" onclick="switchScreen('dm')"><span class="nl">Messages</span></div>
+  </div>
+</div>
+
+<script>
+const searchData=[
+  {av:'BL',name:'blurrr',where:'gaming-squad · #general',txt:'the new season hella ass',time:'2m'},
+  {av:'PE',name:'pengiun',where:'art-collective · #work',txt:'finished everything mashallah',time:'18m'},
+  {av:'MN',name:'magicnuts',where:'dev-hub · #announcements',txt:'admin abuse timeee',time:'1h'},
+  {av:'DR',name:'drake',where:'dev-hub · #builds',txt:'pc parts are in stock lets fucking go',time:'Tue'},
+  {av:'SN',name:'snakes',where:'gaming-squad · #general',txt:'anyone got specs for a gaming pc?',time:'Mon'},
+  {av:'MB',name:'mrbeast',where:'gaming-squad · #general',txt:'giving away an island to whoever wins the challenge',time:'Sun'},
+];
+const chats={
+  blurrr:[{me:0,t:'bro did you see that clip'},{me:1,t:'LMAOO no way'},{me:0,t:'fr it was so cooked'},{me:0,t:'bro its hella fried'},{me:1,t:'send it rn'}],
+  pengiun:[{me:0,t:'you HAVE to see my new piece'},{me:1,t:'no way you finished it??'},{me:0,t:'YES finally lol'},{me:0,t:'that clip was hella tuff'}],
+  snakes:[{me:1,t:'you pulling up tonight?'},{me:0,t:'maybe what time'},{me:1,t:'like 8ish'},{me:0,t:'aight bet pull up at 8'}],
+  drake:[{me:0,t:'pc finally running'},{me:1,t:'what specs'},{me:0,t:'4080 + 7800X3D'},{me:0,t:'that build was hella tuff'}],
+  mrbeast:[{me:0,t:'yo doing a giveaway'},{me:1,t:'BRO ARE YOU SERIOUS'},{me:0,t:'island'},{me:0,t:'giving away an island to whoever wins'}],
+};
+const rep=['no cap fr','lmaoo bro','facts tho','wait real?','bro','say less','goated','nah ur cooked','sheesh','fr fr'];
+
+function switchScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));
+  document.getElementById('screen-'+n).classList.add('active');
+  const navTarget = n==='chat'?'dm':n==='channels'?'servers':n;
+  const navEl=document.getElementById('nav-'+navTarget);
+  if(navEl)navEl.classList.add('active');
+}
+
+function openChat(u,av,st){
+  document.getElementById('cav').textContent=av;
+  document.getElementById('cnm').textContent=u;
+  document.getElementById('cst').textContent=st[0].toUpperCase()+st.slice(1);
+  const b=document.getElementById('msgs');
+  b.innerHTML=(chats[u]||[]).map(m=>`<div class="msg ${m.me?'me':'them'}"><div class="bbl">${m.t}</div><div class="mt">6:07</div></div>`).join('');
+  switchScreen('chat');
+  setTimeout(()=>b.scrollTop=b.scrollHeight,50);
+}
+
+function send(){
+  const i=document.getElementById('ci'),b=document.getElementById('msgs');
+  if(!i.value.trim())return;
+  b.innerHTML+=`<div class="msg me"><div class="bbl">${i.value}</div><div class="mt">6:07</div></div>`;
+  i.value='';b.scrollTop=b.scrollHeight;
+  setTimeout(()=>{b.innerHTML+=`<div class="msg them"><div class="bbl">${rep[Math.floor(Math.random()*rep.length)]}</div><div class="mt">6:07</div></div>`;b.scrollTop=b.scrollHeight;},1000);
+}
+
+function doSearch(){
+  const q=document.getElementById('sq').value.trim(),b=document.getElementById('sr');
+  if(!q){b.innerHTML='<div class="empty">Start typing to search</div>';return;}
+  const r=searchData.filter(d=>d.name.toLowerCase().includes(q.toLowerCase())||d.txt.toLowerCase().includes(q.toLowerCase()));
+  if(!r.length){b.innerHTML=`<div class="empty">No results for "${q}"</div>`;return;}
+  const e=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  b.innerHTML=r.map(d=>`<div class="ri"><div class="rav">${d.av}</div><div style="flex:1;min-width:0"><div class="rn">${d.name} <span class="rw">· ${d.where}</span></div><div class="rt">${d.txt.replace(new RegExp(e,'gi'),m=>`<mark>${m}</mark>`)}</div></div><span style="font-size:11px;color:var(--m);flex-shrink:0">${d.time}</span></div>`).join('');
+}
+
+function openServer(name,av,channels){
+  document.getElementById('sav').textContent=av;
+  document.getElementById('snm').textContent=name;
+  const unread={'general-chat':12,'builds':2};
+  document.getElementById('chl').innerHTML=channels.map(c=>`<div class="ci2"><span class="hash">#</span><span class="cn">${c}</span>${unread[c]?`<span class="badge">${unread[c]}</span>`:''}</div>`).join('');
+  switchScreen('channels');
+}
+</script>
+</body>
+</html>
